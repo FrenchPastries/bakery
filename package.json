@@ -1,0 +1,14 @@
+{
+  "name": "service-registry",
+  "private": true,
+  "repository": "",
+  "license": "MIT",
+  "author": "Arthur <arthur.escriou@gmail.com>",
+    "description": "Node JS service registry",
+  "dependencies": {
+    "express": "^4.16.4"
+  },
+  "scripts": {
+    "start": "node src/main.js"
+  }
+}
