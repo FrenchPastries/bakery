@@ -4,11 +4,13 @@
   "repository": "",
   "license": "MIT",
   "author": "Arthur <arthur.escriou@gmail.com>",
-    "description": "Node JS service registry",
+  "description": "Node JS service registry",
   "dependencies": {
+    "body-parser": "^1.18.3",
     "express": "^4.16.4"
   },
   "scripts": {
-    "start": "node src/main.js"
+    "start": "node src/main.js",
+    "dev": "nodemon src/main.js"
   }
 }
