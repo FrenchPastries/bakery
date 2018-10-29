@@ -2,6 +2,11 @@
 # yarn lockfile v1
 
 
+"@frenchpastries/millefeuille@^0.1.0":
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/@frenchpastries/millefeuille/-/millefeuille-0.1.0.tgz#bf4b4af488e5e851a9777b5a86dfac87b9a74f51"
+  integrity sha512-rfcAkpFVem6j6F1hna6OlEr9KtO4eo8xipAFY/pyBA2MwmPlZmXXxnrGirh/BCcU/66eymr7XOijSAMtgNSvrg==
+
 assertion-error@^1.1.0:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/assertion-error/-/assertion-error-1.1.0.tgz#e60b6b0e8f301bd97e5375215bda406c85118c0b"
