@@ -11,6 +11,11 @@ const register = ({
   if (Object.keys(registry.services).includes(name)) {
     throw new Error('Service with the same name already register ' + name)
   } else {
+    registry.services[name] = {
+      name,
+      routes,
+      version
+    }
     const newRoutes = {}
     routes.forEach(route => {
       if (Object.keys(routes).includes(route)) {
@@ -27,5 +32,7 @@ const register = ({
   }
 }
 
-exports.register = register
-exports.registry = registry
+module.exports = {
+  register,
+  registry
+}
