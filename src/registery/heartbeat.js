@@ -1,4 +1,5 @@
 const http = require('http')
+const registery = require('./registery')
 const TIMEOUT = parseInt(process.env.TIMEOUT_HEARTBEAT.trim(), 10)
 
 const ping = service => {
@@ -30,6 +31,8 @@ const pingEveryServices = (registery) => {
 
 const deadService = (service) => {
   console.log(service.name + ' at ' + service.address + ' iz ded!')
+  registery.deleteDeadService(service.uuid)
+
 }
 
 module.exports = {

@@ -16,7 +16,12 @@ const register = service => {
   return uuid
 }
 
+const deleteDeadService = (uuid) => {
+  delete Object.values(registery.services).find(el => el[uuid])[uuid]
+}
+
 module.exports = {
   register,
-  registery
+  registery,
+  deleteDeadService
 }
