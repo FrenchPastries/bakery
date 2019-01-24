@@ -21,14 +21,14 @@ const handlerServices = request => ({
 
 const handlerRegister = request => {
   console.log(request.body)
-  registery.register(JSON.parse(request.body))
+  const uuid = registery.register(JSON.parse(request.body))
   console.log(registery.registery)
   return {
     statusCode: 200,
     headers: {
       'Content-Type': 'application/json'
     },
-    body: JSON.stringify(registery.registery)
+    body: JSON.stringify({uuid})
   }
 }
 

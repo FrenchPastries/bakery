@@ -11,7 +11,7 @@ const ping = service => {
     path: '/heartbeat',
     agent: false
   }, (res) => {
-    console.log('Success ping at ' + service.address)
+    console.log('Success ping at ' + service.address + ' (' + service.uuid + ')')
     // console.log(res)
   });
   request.setTimeout(TIMEOUT, () => {
@@ -25,7 +25,7 @@ const ping = service => {
 const pingEveryServices = (registery) => {
   const services = Object.values(registery.services)
   // console.log(services)
-  services.reduce((acc, val) => acc.concat(val), []).forEach(ping)
+  services.reduce((acc, val) => acc.concat(Object.values(val)), []).forEach(ping)
 }
 
 const deadService = (service) => {

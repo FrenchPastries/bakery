@@ -1,13 +1,19 @@
+const uuidv4 = require('uuid/v4')
+
 const registery = {
   services: {}
 }
 
 const register = service => {
+  const uuid = uuidv4()
+  service.uuid = uuid
   if (!registery.services[service.name]) {
-    registery.services[service.name] = [service]
+    registery.services[service.name] = {}
+    registery.services[service.name][uuid] = service
   } else {
-    registery.services[service.name].push(service)
+    registery.services[service.name][uuid] = service
   }
+  return uuid
 }
 
 module.exports = {
