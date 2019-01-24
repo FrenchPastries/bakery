@@ -1,17 +1,22 @@
 {
-  "name": "service-registry",
+  "name": "bakery",
   "private": true,
   "repository": "",
   "license": "MIT",
   "author": "Arthur <arthur.escriou@gmail.com>",
   "description": "Node JS service registry",
   "dependencies": {
+    "@frenchpastries/assemble": "^0.1.1",
+    "@frenchpastries/millefeuille": "^0.1.6",
+    "dotenv": "^6.2.0"
   },
   "devDependencies": {
     "chai": "^4.1.2",
     "mocha": "^5.2.0"
   },
   "scripts": {
-    "test": "mocha test/**/*-test.js"
-    }
+    "test": "mocha test/**/*-test.js",
+    "dev": "nodemon src/main.js",
+    "start": "node src/main.js"
+  }
 }

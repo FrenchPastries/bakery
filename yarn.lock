@@ -2,6 +2,16 @@
 # yarn lockfile v1
 
 
+"@frenchpastries/assemble@^0.1.1":
+  version "0.1.1"
+  resolved "https://registry.yarnpkg.com/@frenchpastries/assemble/-/assemble-0.1.1.tgz#94994842433b422d1c3b1ece20a3bc6dad02868e"
+  integrity sha512-2G97PP5b0GdQtsVt24pkWGwsm13x16zZHJs+GScsH89d2HlSXO2z+R4jnP7S57gncAnn+cgjYDoS6tltFdvU6A==
+
+"@frenchpastries/millefeuille@^0.1.6":
+  version "0.1.6"
+  resolved "https://registry.yarnpkg.com/@frenchpastries/millefeuille/-/millefeuille-0.1.6.tgz#0d742343785ac3ff29efccdc76a18e52588c6bbb"
+  integrity sha512-3c8wsP2dhBDvlDnoIy3oYZq/hEXKJXX9EFQ8wckawyvfR/RoKdt20kaYdVr9+g6hGvyK8rU06+GpTw6JXnx9Yw==
+
 assertion-error@^1.1.0:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/assertion-error/-/assertion-error-1.1.0.tgz#e60b6b0e8f301bd97e5375215bda406c85118c0b"
@@ -70,6 +80,11 @@ diff@3.5.0:
   version "3.5.0"
   resolved "https://registry.yarnpkg.com/diff/-/diff-3.5.0.tgz#800c0dd1e0a8bfbc95835c202ad220fe317e5a12"
   integrity sha512-A46qtFgd+g7pDZinpnwiRJtxbC1hpgf0uzP3iG89scHk0AUC7A1TGxf5OiiOUv/JMZR8GOt8hL900hV0bOy5xA==
+
+dotenv@^6.2.0:
+  version "6.2.0"
+  resolved "https://registry.yarnpkg.com/dotenv/-/dotenv-6.2.0.tgz#941c0410535d942c8becf28d3f357dbd9d476064"
+  integrity sha512-HygQCKUBSFl8wKQZBSemMywRWcEDNidvNbjGVyZu3nbZ8qq9ubiPoGLMdRDpfSrpkkm9BXYFkpKxxFX38o/76w==
 
 escape-string-regexp@1.0.5:
   version "1.0.5"
