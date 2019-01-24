@@ -13,7 +13,16 @@ const ping = service => {
     agent: false
   }, (res) => {
     console.log('Success ping at ' + service.address + ' (' + service.uuid + ')')
-    // console.log(res)
+    let data = ''
+    res.on('data', (d) => {
+      data += d
+    })
+    res.on('end', () => {
+      const dataRes = JSON.parse(data)
+      if (dataRes.uuid != service.uuid) {
+        deadService(service)
+      }
+    })
   });
   request.setTimeout(TIMEOUT, () => {
     deadService(service)
