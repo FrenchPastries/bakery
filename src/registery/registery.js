@@ -4,7 +4,7 @@ const registery = {
   services: {}
 }
 
-const register = service => {
+const register = (service) => {
   const uuid = uuidv4()
   service.uuid = uuid
   if (!registery.services[service.name]) {
