@@ -37,7 +37,7 @@ const handlerRegister = (request) => {
 const pingServices = () => {
   setInterval(
     heartbeat.pingEveryServices,
-    parseInt(process.env.INTERVAL_HEARBEAT),
+    parseInt(process.env.INTERVAL_HEARTBEAT),
     registery.registery
   )
 }
