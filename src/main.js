@@ -34,7 +34,14 @@ const handlerRegister = (request) => {
   }
 }
 
-setInterval(heartbeat.pingEveryServices, parseInt(process.env.INTERVAL_HEARBEAT), registery.registery)
+const pingServices = () => {
+  setInterval(
+    heartbeat.pingEveryServices,
+    parseInt(process.env.INTERVAL_HEARBEAT),
+    registery.registery
+  )
+}
+
 const helloResponse = response('Do you want croissant?!')
 
 const handler = Assemble.routes([
@@ -45,5 +52,6 @@ const handler = Assemble.routes([
 ])
 
 const server = MilleFeuille.create(handler)
+pingServices()
 
 console.log(registery.registery)
