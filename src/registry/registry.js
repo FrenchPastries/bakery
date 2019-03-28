@@ -1,27 +1,40 @@
 const uuidv4 = require('uuid/v4')
 
-const registry = {
-  services: {}
-}
-
-const register = (service) => {
-  const uuid = uuidv4()
-  service.uuid = uuid
-  if (!registry.services[service.name]) {
-    registry.services[service.name] = {}
-    registry.services[service.name][uuid] = service
-  } else {
-    registry.services[service.name][uuid] = service
+class Registry {
+  constructor() {
+    this.services = {}
   }
-  return uuid
+
+  setServiceByUUID(service, uuid) {
+    const { services } = this
+    if (!services[service.name]) {
+      services[service.name] = {}
+      services[service.name][uuid] = service
+    } else {
+      services[service.name][uuid] = service
+    }
+  }
+
+  register(service) {
+    const uuid = uuidv4()
+    service.uuid = uuid
+    this.setServiceByUUID(service, uuid)
+    return uuid
+  }
+
+  deleteDeadService(uuid) {
+    const { services } = this
+    const findByID = element => element[uuid]
+    delete Object.values(services).find(findByID)[uuid]
+  }
+
+  getAllServices() {
+    return (
+      Object
+        .values(this.services)
+        .reduce((acc, val) => acc.concat(Object.values(val)), [])
+    )
+  }
 }
 
-const deleteDeadService = (uuid) => {
-  delete Object.values(registry.services).find(el => el[uuid])[uuid]
-}
-
-module.exports = {
-  register,
-  registry,
-  deleteDeadService
-}
+module.exports = Registry

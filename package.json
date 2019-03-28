@@ -11,8 +11,10 @@
     "start": "node src/main.js"
   },
   "dependencies": {
+    "@frenchpastries/arrange": "^0.1.0",
     "@frenchpastries/assemble": "^0.1.1",
     "@frenchpastries/millefeuille": "^0.1.6",
+    "node-fetch": "^2.3.0",
     "uuid": "^3.3.2"
   },
   "devDependencies": {
