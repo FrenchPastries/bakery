@@ -1,7 +1,4 @@
-if (process.env.NODE_ENV === 'development') {
-  require('dotenv').config()
-}
-
+require('./dotenv')
 const MilleFeuille = require('@frenchpastries/millefeuille')
 const registery = require('./registery/registery')
 const heartbeat = require('./registery/heartbeat')
