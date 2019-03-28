@@ -1,13 +1,10 @@
-require('./dotenv')
 const MilleFeuille = require('@frenchpastries/millefeuille')
 const { response } = require('@frenchpastries/millefeuille/response')
-const { jsonResponse, parseBody } = require('./middlewares/json')
 const { get, post, notFound, routes } = require('@frenchpastries/assemble')
 
-const Registry = require('./registry/registry')
+const { jsonResponse, parseBody } = require('./middlewares/json')
+const Registry = require('./registry/Registry')
 const heartbeat = require('./registry/heartbeat')
-
-const INTERVAL_HEARTBEAT = parseInt(process.env.INTERVAL_HEARTBEAT, 10)
 
 const handleNotFound = () => {
   return {
@@ -16,41 +13,40 @@ const handleNotFound = () => {
 }
 
 const getServices = registry => () => {
-  return response(registry.registry)
+  return response(registry)
 }
 
 const registerService = registry => ({ body }) => {
   console.log(body)
-  const uuid = registry.register(body)
+  const uuid = Registry.register(registry, body)
   console.log(registry)
   return response({ uuid })
 }
 
-const pingServices = registry => {
+const pingServices = (heartbeatInterval, heartbeatTimeout, registry) => {
   return setInterval(
-    heartbeat.pingEveryServices,
-    INTERVAL_HEARTBEAT,
+    heartbeat.pingEveryServices(heartbeatTimeout),
+    heartbeatInterval,
     registry,
   )
 }
 
-const handler = registry => routes([
+const allRoutes = registry => routes([
   get('/services', jsonResponse(getServices(registry))),
   post('/register', parseBody(jsonResponse(registerService(registry)))),
   notFound(handleNotFound),
 ])
 
-class Bakery {
-  constructor(port) {
-    this.registry = new Registry()
-    this.server = MilleFeuille.create(handler(this.registry), { port })
-    this.interval = pingServices(this.registry)
-  }
-
-  close() {
-    clearInterval(this.interval)
-    this.server.close()
+const create = ({ heartbeatInterval, heartbeatTimeout, port }) => {
+  const registry = Registry.create()
+  const server = MilleFeuille.create(allRoutes(registry), { port })
+  const interval = pingServices(heartbeatInterval, heartbeatTimeout, registry)
+  return () => {
+    clearInterval(interval)
+    server.close()
   }
 }
 
-module.exports = Bakery
+module.exports = {
+  create,
+}
