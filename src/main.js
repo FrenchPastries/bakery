@@ -1,7 +1,7 @@
 require('./dotenv')
 const MilleFeuille = require('@frenchpastries/millefeuille')
-const registery = require('./registery/registery')
-const heartbeat = require('./registery/heartbeat')
+const registry = require('./registry/registry')
+const heartbeat = require('./registry/heartbeat')
 const { response } = require('@frenchpastries/millefeuille/response')
 const {
   get,
@@ -15,13 +15,13 @@ const handlerServices = (request) => ({
   headers: {
     'Content-Type': 'application/json'
   },
-  body: JSON.stringify(registery.registery)
+  body: JSON.stringify(registry.registry)
 })
 
 const handlerRegister = (request) => {
   console.log(request.body)
-  const uuid = registery.register(JSON.parse(request.body))
-  console.log(registery.registery)
+  const uuid = registry.register(JSON.parse(request.body))
+  console.log(registry.registry)
   return {
     statusCode: 200,
     headers: {
@@ -35,7 +35,7 @@ const pingServices = () => {
   setInterval(
     heartbeat.pingEveryServices,
     parseInt(process.env.INTERVAL_HEARTBEAT),
-    registery.registery
+    registry.registry
   )
 }
 
@@ -49,6 +49,7 @@ const handler = Assemble.routes([
 ])
 
 const server = MilleFeuille.create(handler)
+
 pingServices()
 
-console.log(registery.registery)
+console.log(registry.registry)

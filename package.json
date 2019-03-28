@@ -1,10 +1,15 @@
 {
-  "name": "bakery",
+  "name": "@frenchpastries/bakery",
   "private": true,
   "repository": "",
   "license": "MIT",
   "author": "Arthur Escriou <arthur.escriou@gmail.com>",
   "description": "Node JS service registry",
+  "scripts": {
+    "test": "mocha test/**/*-test.js",
+    "dev": "NODE_ENV=development nodemon src/main.js",
+    "start": "node src/main.js"
+  },
   "dependencies": {
     "@frenchpastries/assemble": "^0.1.1",
     "@frenchpastries/millefeuille": "^0.1.6",
@@ -16,10 +21,5 @@
     "eslint": "^5.13.0",
     "mocha": "^5.2.0",
     "nodemon": "^1.18.9"
-  },
-  "scripts": {
-    "test": "mocha test/**/*-test.js",
-    "dev": "NODE_ENV=development nodemon src/main.js",
-    "start": "node src/main.js"
   }
 }
