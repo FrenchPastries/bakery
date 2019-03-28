@@ -1,8 +1,8 @@
 const MilleFeuille = require('@frenchpastries/millefeuille')
 const { response } = require('@frenchpastries/millefeuille/response')
 const { get, post, notFound, routes } = require('@frenchpastries/assemble')
+const { jsonResponse, parseJSONBody } = require('@frenchpastries/arrange')
 
-const { jsonResponse, parseBody } = require('./middlewares/json')
 const Registry = require('./registry/Registry')
 const heartbeat = require('./registry/heartbeat')
 
@@ -33,7 +33,7 @@ const pingServices = (heartbeatInterval, heartbeatTimeout, registry) => {
 
 const allRoutes = registry => routes([
   get('/services', jsonResponse(getServices(registry))),
-  post('/register', parseBody(jsonResponse(registerService(registry)))),
+  post('/register', parseJSONBody(jsonResponse(registerService(registry)))),
   notFound(handleNotFound),
 ])
 

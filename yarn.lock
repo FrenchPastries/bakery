@@ -18,10 +18,10 @@
     esutils "^2.0.2"
     js-tokens "^4.0.0"
 
-"@frenchpastries/arrange@^0.1.0":
-  version "0.1.0"
-  resolved "https://registry.yarnpkg.com/@frenchpastries/arrange/-/arrange-0.1.0.tgz#476f3b74797b7d80d4ad70d104ff5d66400d0639"
-  integrity sha512-gPA5C1Uuqd8vy6tgIlPXLadC3aruG+nMaaU5pGnhlgz8yeb76jJV1aEjhbGRrW7LPdL2ErFA4IA0hgpvmd2jrQ==
+"@frenchpastries/arrange@^0.2.0":
+  version "0.2.0"
+  resolved "https://registry.yarnpkg.com/@frenchpastries/arrange/-/arrange-0.2.0.tgz#2cffb92c50554e661254e062f5a783bbd1a466b1"
+  integrity sha512-WqupALj75xGgWvNfXsLF40iVepnwD2TW0g+kBIHnculcft2tpILCqFb+0eCNAdMCw7gntT+eubZss3a6nG4Klw==
 
 "@frenchpastries/assemble@^0.1.1":
   version "0.1.3"

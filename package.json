@@ -10,7 +10,7 @@
     "test": "mocha test/**/*-test.js"
   },
   "dependencies": {
-    "@frenchpastries/arrange": "^0.1.0",
+    "@frenchpastries/arrange": "^0.2.0",
     "@frenchpastries/assemble": "^0.1.1",
     "@frenchpastries/millefeuille": "^0.1.6",
     "node-fetch": "^2.3.0",
