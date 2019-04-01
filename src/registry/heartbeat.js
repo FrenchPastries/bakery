@@ -1,48 +1,44 @@
-const http = require('http')
-const registry = require('./registry')
-const TIMEOUT = parseInt(process.env.TIMEOUT_HEARTBEAT.trim(), 10)
+const fetch = require('node-fetch')
 
-const ping = (service) => {
+const Registry = require('./Registry')
+
+const getHeartbeatOrKillService = async (timeout, hostname, port, service, registry) => {
+  try {
+    const request = await fetch(`http://${hostname}:${port}/heartbeat`, { timeout })
+    const data = await request.json()
+    getPingResponse(service, data)
+  } catch (error) {
+    console.log(error)
+    deadService(registry, service)
+  }
+}
+
+const ping = (timeout, registry) => async service => {
   const address = service.address.split(':')
   const hostname = address[0]
   const port = parseInt(address[1])
-  const request = http.get({
-    hostname,
-    port,
-    path: '/heartbeat',
-    agent: false
-  }, getPingResponse(service))
-  request.setTimeout(TIMEOUT, () => deadService(service))
-  request.on('error', () => deadService(service))
+  getHeartbeatOrKillService(timeout, hostname, port, service, registry)
 }
 
-const getPingResponse = (service) => (res) => {
+const getPingResponse = (service, { uuid }) => {
   console.log(`Success ping at ${service.address} (${service.uuid})`)
-  let data = ''
-  res.on('data', (d) => data += d)
-  res.on('end', () => {
-    const dataRes = JSON.parse(data)
-    if (dataRes.uuid != service.uuid) {
-      deadService(service)
-    }
-  })
+  if (uuid !== service.uuid) {
+    deadService(service)
+  }
 }
 
-const getAllServices = ({ services }) => {
-  return Object
-    .values(services)
-    .reduce((acc, val) => acc.concat(Object.values(val)), [])
+const pingEveryServices = timeout => registry => {
+  console.log(registry)
+  Registry
+    .getAllServices(registry)
+    .forEach(ping(timeout, registry))
 }
 
-const pingEveryServices = (registry) => {
-  getAllServices(registry).forEach(ping)
-}
-
-const deadService = ({ name, address, uuid }) => {
+const deadService = (registry, { name, address, uuid }) => {
   console.log(`${name} at ${address} iz ded!`)
-  registry.deleteDeadService(uuid)
+  Registry.deleteDeadService(registry, uuid)
 }
 
 module.exports = {
-  pingEveryServices
+  pingEveryServices,
 }
