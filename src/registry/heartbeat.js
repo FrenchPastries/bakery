@@ -6,7 +6,7 @@ const getHeartbeatOrKillService = async (timeout, hostname, port, service, regis
   try {
     const request = await fetch(`http://${hostname}:${port}/heartbeat`, { timeout })
     const data = await request.json()
-    getPingResponse(service, data)
+    getPingResponse(registry, service, data)
   } catch (error) {
     console.log(error)
     deadService(registry, service)
@@ -20,10 +20,10 @@ const ping = (timeout, registry) => async service => {
   getHeartbeatOrKillService(timeout, hostname, port, service, registry)
 }
 
-const getPingResponse = (service, { uuid }) => {
+const getPingResponse = (registry, service, { uuid }) => {
   console.log(`Success ping at ${service.address} (${service.uuid})`)
   if (uuid !== service.uuid) {
-    deadService(service)
+    deadService(registry, service)
   }
 }
 
