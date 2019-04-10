@@ -13,7 +13,7 @@ const handleNotFound = () => {
 }
 
 const getServices = registry => () => {
-  return response(registry)
+  return response(Registry.getAllServices(registry))
 }
 
 const registerService = registry => ({ body }) => {
