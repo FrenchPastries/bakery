@@ -1,27 +1,37 @@
 const uuidv4 = require('uuid/v4')
 
-const setServiceByUUID = (services, service, uuid) => {
-  if (!services[service.name]) {
-    services[service.name] = {}
-    services[service.name][uuid] = service
+const Interfaces = require('./interfaces')
+
+const setServiceByUUID = (registry, service, uuid) => {
+  if (!registry.services[service.name]) {
+    registry.services[service.name] = {}
+    registry.services[service.name][uuid] = service
   } else {
-    services[service.name][uuid] = service
+    registry.services[service.name][uuid] = service
   }
 }
 
-const register = (services, service) => {
+const generateHeartbeatContent = registry => {
+  const { services } = registry
+  const interfaces = Interfaces.getInterfaces(services)
+  registry.heartbeatContent = JSON.stringify(interfaces)
+}
+
+const register = (registry, service) => {
   const uuid = uuidv4()
   service.uuid = uuid
-  setServiceByUUID(services, service, uuid)
+  setServiceByUUID(registry, service, uuid)
+  generateHeartbeatContent(registry)
   return uuid
 }
 
-const deleteDeadService = (services, uuid) => {
+const deleteDeadService = (registry, uuid) => {
   const findByID = element => element[uuid]
-  delete Object.values(services).find(findByID)[uuid]
+  delete Object.values(registry.services).find(findByID)[uuid]
+  generateHeartbeatContent(registry)
 }
 
-const getAllServices = services => {
+const getAllServices = ({ services }) => {
   return (
     Object
       .values(services)
@@ -30,12 +40,14 @@ const getAllServices = services => {
 }
 
 const create = () => {
-  return {}
+  return {
+    services: {},
+    heartbeatContent: JSON.stringify(null),
+  }
 }
 
 module.exports = {
   create,
-  setServiceByUUID,
   register,
   deleteDeadService,
   getAllServices,
