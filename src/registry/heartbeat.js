@@ -2,9 +2,16 @@ const fetch = require('node-fetch')
 
 const Registry = require('./Registry')
 
+const heartbeat = (url, timeout) => {
+  return (body) => {
+    return fetch(url, { method: 'POST', timeout, body })
+  }
+}
+
 const getHeartbeatOrKillService = async (timeout, hostname, port, service, registry) => {
   try {
-    const request = await fetch(`http://${hostname}:${port}/heartbeat`, { timeout })
+    const fetcher = heartbeat(`http://${hostname}:${port}/heartbeat`, timeout)
+    const request = await fetcher(registry.heartbeatContent)
     const data = await request.json()
     getPingResponse(registry, service, data)
   } catch (error) {
@@ -14,10 +21,8 @@ const getHeartbeatOrKillService = async (timeout, hostname, port, service, regis
 }
 
 const ping = (timeout, registry) => async service => {
-  const address = service.address.split(':')
-  const hostname = address[0]
-  const port = parseInt(address[1])
-  getHeartbeatOrKillService(timeout, hostname, port, service, registry)
+  const [ hostname, port ] = service.address.split(':')
+  getHeartbeatOrKillService(timeout, hostname, parseInt(port), service, registry)
 }
 
 const getPingResponse = (registry, service, { uuid }) => {
@@ -28,7 +33,6 @@ const getPingResponse = (registry, service, { uuid }) => {
 }
 
 const pingEveryServices = timeout => registry => {
-  console.log(registry)
   Registry
     .getAllServices(registry)
     .forEach(ping(timeout, registry))
