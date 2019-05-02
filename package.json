@@ -1,7 +1,6 @@
 {
   "name": "@frenchpastries/bakery",
-  "private": true,
-  "repository": "",
+  "repository": "https://github.com/FrenchPastries/bakery",
   "license": "MIT",
   "author": "Arthur Escriou <arthur.escriou@gmail.com>",
   "description": "Node JS service registry",
@@ -20,5 +19,6 @@
     "chai": "^4.1.2",
     "eslint": "^5.13.0",
     "mocha": "^5.2.0"
-  }
+  },
+  "version": "0.0.0"
 }
