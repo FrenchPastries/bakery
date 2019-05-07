@@ -1,6 +1,6 @@
 const fetch = require('node-fetch')
 
-const Registry = require('./Registry')
+const Registry = require('./registry')
 
 const heartbeat = (url, timeout) => {
   return (body) => {
