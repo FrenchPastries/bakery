@@ -3,7 +3,7 @@ const { response } = require('@frenchpastries/millefeuille/response')
 const { get, post, notFound, routes } = require('@frenchpastries/assemble')
 const { jsonResponse, parseJSONBody } = require('@frenchpastries/arrange')
 
-const Registry = require('./registry/Registry')
+const Registry = require('./registry/registry')
 const heartbeat = require('./registry/heartbeat')
 
 const handleNotFound = () => {
