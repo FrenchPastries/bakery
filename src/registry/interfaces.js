@@ -12,10 +12,18 @@ const extractInterface = value => {
     .reduce(extractInterfaceInside, null)
 }
 
+const extractMetadata = value => {
+  return Object.values(value).reduce((acc, { address, version }) => {
+    return [...acc, { address, version }]
+  }, [])
+}
+
 const generateInterfaces = (acc, [ key, value ]) => {
+  const communicationInterface = extractInterface(value)
+  const fullInterface = { ...communicationInterface, instances: extractMetadata(value) }
   return {
     ...acc,
-    [key]: extractInterface(value),
+    [key]: fullInterface,
   }
 }
 
