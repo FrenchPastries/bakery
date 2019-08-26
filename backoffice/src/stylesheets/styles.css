@@ -1,13 +1,122 @@
 body {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
-    "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
 code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+.column {
+  display: flex;
+  flex-direction: column;
+}
+
+.app {
+  min-height: 100vh;
+  display: grid;
+  grid-template-rows: auto 1fr;
+  background: #f3f6fa;
+}
+
+.app-header {
+  border-bottom: 1px solid #eee;
+  padding: 18px 36px;
+  font-size: 18px;
+  font-weight: 700;
+  background: white;
+  position: sticky;
+  top: 0;
+}
+
+.app-section {
+  padding: 24px;
+  display: flex;
+  flex-wrap: wrap;
+  margin: auto;
+}
+
+.instance {
+  background: white;
+  border: 1px solid #eee;
+  border-radius: 5px;
+  min-width: 300px;
+  width: 300px;
+  height: 300px;
+  margin: 12px;
+}
+
+.instance-name {
+  padding: 6px 12px;
+  border-bottom: 1px solid #eee;
+  font-size: 12px;
+  font-weight: 600;
+  background: #f9fafc;
+  border-radius: 5px 5px 0 0;
+}
+
+.instance-header {
+  border-bottom: 1px solid #eee;
+  padding: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.instance-state {
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.instance-version {
+  font-size: 10px;
+  color: #aaa;
+  font-weight: 600;
+}
+
+.instance-address {
+  color: #666;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.instance-content {
+  overflow: hidden;
+}
+
+.instance-content-title {
+  padding: 12px;
+  font-size: 12px;
+  color: #666;
+  font-weight: 600;
+  border-bottom: 1px solid #eee;
+}
+
+.instance-content-value {
+  overflow: scroll;
+  margin: 0;
+  font-size: 12px;
+  font-family: 'Menlo', 'DejaVu Sans Mono', 'Consolas';
+  padding: 12px;
+}
+
+.green {
+  color: #2ecc40;
+}
+
+.orange {
+  color: #ff851b;
+}
+
+.red {
+  color: #ff4136;
 }
