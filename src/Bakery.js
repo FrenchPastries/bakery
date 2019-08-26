@@ -1,6 +1,6 @@
 const MilleFeuille = require('@frenchpastries/millefeuille')
 const { response } = require('@frenchpastries/millefeuille/response')
-const { get, post, notFound, routes } = require('@frenchpastries/assemble')
+const { post, notFound, routes } = require('@frenchpastries/assemble')
 const { jsonResponse, parseJSONBody } = require('@frenchpastries/arrange')
 
 const Registry = require('./registry/registry')
@@ -31,15 +31,30 @@ const pingServices = (heartbeatInterval, heartbeatTimeout, registry) => {
   )
 }
 
+const interceptGet = handler => request => {
+  if (request.method === 'GET') {
+    if (process.env.NODE_ENV !== 'production') {
+      return {
+        statusCode: 302,
+        headers: {
+          Location: 'http://localhost:3006',
+        }
+      }
+    }
+  } else {
+    return handler(request)
+  }
+}
+
 const allRoutes = registry => routes([
-  get('/services', jsonResponse(getServices(registry))),
+  post('/services', jsonResponse(getServices(registry))),
   post('/register', parseJSONBody(jsonResponse(registerService(registry)))),
   notFound(handleNotFound),
 ])
 
 const create = ({ heartbeatInterval, heartbeatTimeout, port }) => {
   const registry = Registry.create()
-  const server = MilleFeuille.create(allRoutes(registry), { port })
+  const server = MilleFeuille.create(interceptGet(allRoutes(registry)), { port })
   const interval = pingServices(heartbeatInterval, heartbeatTimeout, registry)
   return () => {
     clearInterval(interval)
