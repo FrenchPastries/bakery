@@ -6,28 +6,38 @@ const fetchBakeryServices = async () => {
   return data
 }
 
-const unifyServices = services => {
-  return services.reduce((acc, service) => {
-    const { name } = service
-    const allServices = acc[name] || []
-    return { ...acc, [name]: [...allServices, service] }
-  }, {})
-}
-
 const useBakeryServices = setServices => {
   React.useEffect(() => {
     const interval = setInterval(async () => {
       const data = await fetchBakeryServices()
-      const newServices = unifyServices(data)
-      setServices(newServices)
+      setServices(data)
     }, 1000)
     return () => clearInterval(interval)
   }, [setServices])
 }
 
+const wrapIntoPx = value => {
+  return `${value}px`
+}
+
+const computeRealWidth = width => {
+  const instanceCardWidth = 324
+  const appSectionPadding = 48
+  const numberOfVisibleCards = Math.floor(width / instanceCardWidth)
+  const widthOfVisibleCards = numberOfVisibleCards * instanceCardWidth
+  const width_ = widthOfVisibleCards + appSectionPadding
+  if (width_ > width) {
+    const numberOfCards = Math.floor(width / instanceCardWidth) - 1
+    const widthOfAllCards = numberOfCards * instanceCardWidth
+    return wrapIntoPx(widthOfAllCards + appSectionPadding)
+  } else {
+    return wrapIntoPx(width_)
+  }
+}
+
 const useWindowWidth = setWindowWidth => {
   React.useEffect(() => {
-    window.addEventListener("resize", () => {
+    window.addEventListener('resize', () => {
       const width = window.innerWidth
       const realWidth = computeRealWidth(width)
       setWindowWidth(realWidth)
@@ -64,9 +74,10 @@ const RenderInterface = ({ interf }) => {
   }
 }
 
-const RenderInstances = ({ instances }) => {
-  return instances.map(({ name, version, address, state, uuid, ...instance }) => (
-    <div className="instance column" key={uuid}>
+const RenderInstance = ({ instance }) => {
+  const { name, version, address, state } = instance
+  return (
+    <div className="instance column">
       <div className="instance-name">{name}</div>
       <div className="instance-header">
         <div className="column">
@@ -82,44 +93,29 @@ const RenderInstances = ({ instances }) => {
         <RenderInterface interf={instance.interface} />
       </div>
     </div>
-  ))
-}
-
-const wrapIntoPx = value => `${value}px`
-
-const computeRealWidth = width => {
-  const instanceCardWidth = 324
-  const appSectionPadding = 48
-  const width_ = Math.floor(width / instanceCardWidth) * instanceCardWidth + appSectionPadding
-  if (width_ > width) {
-    const numberOfCards = Math.floor(width / instanceCardWidth) - 1
-    const widthOfAllCards = numberOfCards * instanceCardWidth
-    return wrapIntoPx(widthOfAllCards + appSectionPadding)
-  } else {
-    return wrapIntoPx(width_)
-  }
+  )
 }
 
 const RenderServices = ({ services, width }) => {
-  return Object.entries(services).map(([serviceName, instances]) => {
-    return (
-      <section className="app-section" style={{ width }} key={serviceName}>
-        <RenderInstances instances={instances} />
-      </section>
-    )
-  })
+  return services.map(instance => (
+    <section className="app-section" style={{ width }} key={instance.uuid}>
+      <RenderInstance instance={instance} />
+    </section>
+  ))
 }
 
 const App = () => {
   const [services, setServices] = React.useState([])
-  const [windowWidth, setWindowWidth] = React.useState(computeRealWidth(window.innerWidth))
+  const [windowWidth, setWindowWidth] = React.useState(
+    computeRealWidth(window.innerWidth)
+  )
   useBakeryServices(setServices)
   useWindowWidth(setWindowWidth)
   return (
     <div className="app">
       <header className="app-header">Bakery</header>
       <main className="app-main">
-        <RenderServices services={services} width={windowWidth}/>
+        <RenderServices services={services} width={windowWidth} />
       </main>
     </div>
   )
