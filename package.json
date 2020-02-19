@@ -1,12 +1,21 @@
 {
   "name": "@frenchpastries/bakery",
   "repository": "https://github.com/FrenchPastries/bakery",
+  "version": "0.2.0",
   "license": "MIT",
-  "author": "Arthur Escriou <arthur.escriou@gmail.com>",
+  "authors": [
+    "Arthur Escriou <arthur.escriou@gmail.com>",
+    "Guillaume Hivert <hivert.is.coming@gmail.com>"
+  ],
   "description": "Node JS service registry",
   "main": "src/Bakery.js",
+  "files": [
+    "src",
+    "backoffice/build"
+  ],
   "scripts": {
-    "test": "mocha test/**/*-test.js"
+    "test": "mocha test/**/*-test.js",
+    "prepublish": "yarn --cwd backoffice build"
   },
   "dependencies": {
     "@frenchpastries/arrange": "^0.2.0",
@@ -19,6 +28,5 @@
     "chai": "^4.1.2",
     "eslint": "^6.1.0",
     "mocha": "^5.2.0"
-  },
-  "version": "0.2.0"
+  }
 }
