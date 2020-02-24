@@ -1,7 +1,7 @@
 {
   "name": "@frenchpastries/bakery",
   "repository": "https://github.com/FrenchPastries/bakery",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "license": "MIT",
   "authors": [
     "Arthur Escriou <arthur.escriou@gmail.com>",
