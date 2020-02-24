@@ -7,6 +7,7 @@ const path = require('path')
 
 const Registry = require('./registry/registry')
 const heartbeat = require('./registry/heartbeat')
+const logger = require('./utils/logger')
 
 const handleNotFound = () => {
   return {
@@ -19,9 +20,7 @@ const getServices = registry => () => {
 }
 
 const registerService = registry => ({ body }) => {
-  console.log(body)
   const uuid = Registry.register(registry, body)
-  console.log(registry)
   return response({ uuid })
 }
 
@@ -68,7 +67,7 @@ const interceptGet = handler => async request => {
       try {
         return await getStaticFiles(request)
       } catch (error) {
-        console.error(error)
+        logger.error(error.message)
         return handleNotFound()
       }
     }

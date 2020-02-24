@@ -1,6 +1,7 @@
 const fetch = require('node-fetch')
 
 const Registry = require('./registry')
+const logger = require('../utils/logger')
 
 const heartbeat = (url, timeout) => {
   return (body) => {
@@ -15,7 +16,7 @@ const getHeartbeatOrKillService = async (timeout, hostname, port, service, regis
     const data = await request.json()
     getPingResponse(registry, service, data)
   } catch (error) {
-    console.log(error)
+    logger.error(error.message)
     deadService(registry, service)
   }
 }
@@ -26,7 +27,8 @@ const ping = (timeout, registry) => async service => {
 }
 
 const getPingResponse = (registry, service, { uuid }) => {
-  console.log(`Success ping at ${service.address} (${service.uuid})`)
+  const { name, address } = service
+  logger.log(`[ping]:ok ${name}@${address} (UUID: ${service.uuid})`)
   if (uuid !== service.uuid) {
     deadService(registry, service)
   }
@@ -39,7 +41,7 @@ const pingEveryServices = timeout => registry => {
 }
 
 const deadService = (registry, { name, address, uuid }) => {
-  console.log(`${name} at ${address} iz ded!`)
+  logger.log(`[dead] ${name}@${address}`)
   Registry.deleteDeadService(registry, uuid)
 }
 
