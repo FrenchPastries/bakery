@@ -12,6 +12,7 @@ const logger = require('./utils/logger')
 const handleNotFound = () => {
   return {
     statusCode: 404,
+    body: 'Not Found',
   }
 }
 
@@ -70,6 +71,8 @@ const interceptGet = handler => async request => {
         logger.error(error.message)
         return handleNotFound()
       }
+    } else {
+      return handler(request)
     }
   } else {
     return handler(request)
