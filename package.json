@@ -8,25 +8,31 @@
     "Guillaume Hivert <hivert.is.coming@gmail.com>"
   ],
   "description": "Node JS service registry",
-  "main": "src/Bakery.js",
+  "main": "dist/bakery.js",
   "files": [
     "src",
     "backoffice/build"
   ],
   "scripts": {
     "test": "mocha test/**/*-test.js",
-    "prepublish": "yarn --cwd backoffice build"
+    "prepublish": "yarn --cwd backoffice build",
+    "build": "tsc"
   },
   "dependencies": {
-    "@frenchpastries/arrange": "^0.2.0",
-    "@frenchpastries/assemble": "^0.2.1",
-    "@frenchpastries/millefeuille": "^0.1.9",
-    "node-fetch": "^2.3.0",
-    "uuid": "^3.3.2"
+    "@frenchpastries/arrange": "^1.0.1",
+    "@frenchpastries/assemble": "^1.0.1",
+    "@frenchpastries/millefeuille": "^1.0.2",
+    "uuid": "^9.0.1"
   },
   "devDependencies": {
-    "chai": "^4.1.2",
-    "eslint": "^6.1.0",
-    "mocha": "^5.2.0"
+    "@types/jest": "^29.5.12",
+    "@types/node": "^20.11.21",
+    "@types/uuid": "^9.0.8",
+    "jest": "^29.7.0",
+    "prettier": "^3.2.5",
+    "typescript": "^5.3.3"
+  },
+  "engines": {
+    "node": ">=18"
   }
 }

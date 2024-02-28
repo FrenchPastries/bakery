@@ -1,0 +1,75 @@
+import * as millefeuille from '@frenchpastries/millefeuille'
+import { response } from '@frenchpastries/millefeuille/response'
+import * as assemble from '@frenchpastries/assemble'
+import { post, notFound, routes } from '@frenchpastries/assemble'
+import * as arrange from '@frenchpastries/arrange'
+import * as fs from 'fs/promises'
+import * as path from 'path'
+
+import { Registry } from './registry/registry'
+import * as heartbeat from './registry/heartbeat'
+import * as logger from './utils/logger'
+import { Options } from './types'
+
+const handleNotFound = async () => ({ statusCode: 404, body: 'Not Found' })
+
+const getServices = (registry: Registry) => async () => {
+  const allServices = registry.list()
+  return response(allServices)
+}
+
+const registerService = (registry: Registry) => {
+  return async ({ body }: millefeuille.IncomingRequest) => {
+    const uuid = registry.register(body)
+    return response({ uuid })
+  }
+}
+
+const pingServices = (registry: Registry, heartbeatInterval: number, heartbeatTimeout: number) => {
+  return setInterval(heartbeat.pingEveryServices(heartbeatTimeout), heartbeatInterval, registry)
+}
+
+const getStaticFiles = async (request: millefeuille.IncomingRequest) => {
+  if (request.location?.pathname === '/') {
+    const htmlFilePath = path.resolve(__dirname, '../backoffice/build/index.html')
+    const body = await fs.readFile(htmlFilePath, 'utf-8')
+    return { statusCode: 200, headers: { 'Content-Type': 'text/html' }, body }
+  } else {
+    const relativePath = '../backoffice/build' + request.location?.pathname
+    const filePath = path.resolve(__dirname, relativePath)
+    const body = await fs.readFile(filePath, 'utf8')
+    return { statusCode: 200, body }
+  }
+}
+
+const interceptGet: assemble.Middleware = handler => async request => {
+  if (request.method !== 'GET') return handler(request)
+  if (process.env.BAKERY_DEVELOPMENT) {
+    return { statusCode: 302, headers: { Location: 'http://localhost:3006' } }
+  } else if (process.env.NODE_ENV === 'development') {
+    return await getStaticFiles(request).catch(error => {
+      logger.error(error.message)
+      return handleNotFound()
+    })
+  } else {
+    return handler(request)
+  }
+}
+
+const allRoutes = (registry: Registry) => {
+  return routes([
+    post('/services', arrange.json.response(getServices(registry))),
+    post('/register', arrange.json.parse(arrange.json.response(registerService(registry)))),
+    notFound(handleNotFound),
+  ])
+}
+
+export const create = ({ heartbeatInterval, heartbeatTimeout, port }: Options) => {
+  const registry = new Registry()
+  const server = millefeuille.create(interceptGet(allRoutes(registry)), { port })
+  const interval = pingServices(registry, heartbeatInterval, heartbeatTimeout)
+  return () => {
+    clearInterval(interval)
+    server.close()
+  }
+}
