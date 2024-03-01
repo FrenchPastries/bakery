@@ -1,7 +1,6 @@
 import * as millefeuille from '@frenchpastries/millefeuille'
 import { response } from '@frenchpastries/millefeuille/response'
 import * as assemble from '@frenchpastries/assemble'
-import { post, notFound, routes } from '@frenchpastries/assemble'
 import * as arrange from '@frenchpastries/arrange'
 import * as fs from 'fs/promises'
 import * as path from 'path'
@@ -26,7 +25,9 @@ const registerService = (registry: Registry) => {
 }
 
 const pingServices = (registry: Registry, heartbeatInterval: number, heartbeatTimeout: number) => {
-  return setInterval(heartbeat.pingEveryServices(heartbeatTimeout), heartbeatInterval, registry)
+  const pinger = heartbeat.pingEveryServices(heartbeatTimeout)
+  const intervalId = setInterval(pinger, heartbeatInterval, registry)
+  return () => clearInterval(intervalId)
 }
 
 const getStaticFiles = async (request: millefeuille.IncomingRequest) => {
@@ -57,19 +58,23 @@ const interceptGet: assemble.Middleware = handler => async request => {
 }
 
 const allRoutes = (registry: Registry) => {
-  return routes([
-    post('/services', arrange.json.response(getServices(registry))),
-    post('/register', arrange.json.parse(arrange.json.response(registerService(registry)))),
-    notFound(handleNotFound),
-  ])
+  return arrange.json.response(
+    arrange.json.parse(
+      assemble.routes([
+        assemble.post('/services', getServices(registry)),
+        assemble.post('/register', registerService(registry)),
+        assemble.notFound(handleNotFound),
+      ])
+    )
+  )
 }
 
 export const create = ({ heartbeatInterval, heartbeatTimeout, port }: Options) => {
   const registry = new Registry()
   const server = millefeuille.create(interceptGet(allRoutes(registry)), { port })
-  const interval = pingServices(registry, heartbeatInterval, heartbeatTimeout)
+  const unsubscriber = pingServices(registry, heartbeatInterval, heartbeatTimeout)
   return () => {
-    clearInterval(interval)
+    unsubscriber()
     server.close()
   }
 }

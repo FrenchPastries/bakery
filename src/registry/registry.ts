@@ -15,22 +15,22 @@ export class Registry {
     this.#services[service.name][uuid] = service
   }
 
-  register = (service: Service) => {
+  register(service: Service) {
     const uuid = uuidv4()
     this.set(uuid, { ...service, uuid })
-    this.#interfaces()
+    this.#generateHeartbeatContent()
     return uuid
   }
 
   remove(uuid: string) {
     this.#services = Object.fromEntries(
       Object.entries(this.#services).flatMap(([servicesNames, services]) => {
-        const servs = Object.entries(services).filter(([_, service]) => service.uuid !== uuid)
-        if (servs.length > 0) return [[servicesNames, Object.fromEntries(servs)]]
+        const filteredServices = Object.entries(services).filter(([_, service]) => service.uuid !== uuid)
+        if (filteredServices.length > 0) return [[servicesNames, Object.fromEntries(filteredServices)]]
         return []
       })
     )
-    this.#interfaces()
+    this.#generateHeartbeatContent()
   }
 
   list() {
@@ -42,7 +42,7 @@ export class Registry {
     return this.#heartbeatContent
   }
 
-  #interfaces() {
+  #generateHeartbeatContent() {
     const response = Object.entries(this.#services).reduce((acc, [serviceName, servicesById]) => {
       const services_ = Object.values(servicesById)
       if (services_.length === 0) return acc
