@@ -45,6 +45,7 @@ const getStaticFiles = async (request: millefeuille.IncomingRequest) => {
 
 const interceptGet: assemble.Middleware = handler => async request => {
   if (request.method !== 'GET') return handler(request)
+  if (request.location?.pathname === '/services') return handler(request)
   if (process.env.BAKERY_DEVELOPMENT) {
     return { statusCode: 302, headers: { Location: 'http://localhost:3006' } }
   } else if (process.env.NODE_ENV === 'development') {
@@ -61,7 +62,7 @@ const allRoutes = (registry: Registry) => {
   return arrange.json.response(
     arrange.json.parse(
       assemble.routes([
-        assemble.post('/services', getServices(registry)),
+        assemble.get('/services', getServices(registry)),
         assemble.post('/register', registerService(registry)),
         assemble.notFound(handleNotFound),
       ])

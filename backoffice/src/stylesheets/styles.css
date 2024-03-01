@@ -1,10 +1,37 @@
 body {
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
+  'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+  sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  background: var(--background);
+}
+
+:root {
+  --header: #f3f6fa;
+  --background: ##f0f0f0;
+  --white: #fff;
+  --black: #000;
+  --border: #eee;
+  --text-grey: #666;
+  --text-light-grey: #aaa;
+
+  --green: #2ecc40;
+  --orange: #ff851b;
+  --red: #ff4136;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --header: #151515;
+    --background: #202020;
+    --white: #000;
+    --black: #fff;
+    --border: #111;
+    --text-grey: #666;
+    --text-light-grey: #444;
+  }
 }
 
 code {
@@ -16,56 +43,63 @@ code {
   box-sizing: border-box;
 }
 
+.row {
+  display: flex;
+}
+
 .column {
   display: flex;
   flex-direction: column;
+}
+
+.padded {
+  gap: 9px;
+  align-items: start;
 }
 
 .app {
   min-height: 100vh;
   display: grid;
   grid-template-rows: auto 1fr;
-  background: #f3f6fa;
 }
 
 .app-header {
-  border-bottom: 1px solid #eee;
+  border-bottom: 1px solid var(--border);
   padding: 18px 36px;
   font-size: 18px;
   font-weight: 700;
-  background: white;
+  background: var(--header);
   position: sticky;
   top: 0;
+  color: var(--text-grey);
 }
 
 .app-section {
-  padding: 24px;
-  display: flex;
-  flex-wrap: wrap;
-  margin: auto;
+  padding: 18px;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 18px;
 }
 
 .instance {
-  background: white;
-  border: 1px solid #eee;
+  background: var(--white);
+  border: 1px solid var(--border);
   border-radius: 5px;
-  min-width: 300px;
-  width: 300px;
-  height: 300px;
-  margin: 12px;
+  height: 500px;
 }
 
 .instance-name {
   padding: 6px 12px;
-  border-bottom: 1px solid #eee;
+  border-bottom: 1px solid var(--border);
   font-size: 12px;
   font-weight: 600;
-  background: #f9fafc;
+  background: var(--header);
   border-radius: 5px 5px 0 0;
+  color: var(--text-light-grey);
 }
 
 .instance-header {
-  border-bottom: 1px solid #eee;
+  border-bottom: 1px solid var(--border);
   padding: 12px;
   display: flex;
   align-items: center;
@@ -79,12 +113,12 @@ code {
 
 .instance-version {
   font-size: 10px;
-  color: #aaa;
+  color: var(--text-light-grey);
   font-weight: 600;
 }
 
 .instance-address {
-  color: #666;
+  color: var(--text-grey);
   font-size: 12px;
   font-weight: 600;
 }
@@ -96,27 +130,71 @@ code {
 .instance-content-title {
   padding: 12px;
   font-size: 12px;
-  color: #666;
+  color: var(--text-grey);
   font-weight: 600;
-  border-bottom: 1px solid #eee;
+  border-bottom: 1px solid var(--border);
+}
+
+.instance-pill {
+  background: var(--background);
+  padding: 6px 12px;
+  border-radius: 10px;
+  color: var(--black);
+  font-weight: bold;
+  font-size: 10px;
 }
 
 .instance-content-value {
-  overflow: scroll;
+  overflow: auto;
   margin: 0;
   font-size: 12px;
   font-family: 'Menlo', 'DejaVu Sans Mono', 'Consolas';
   padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.instance-content-value-group {
+  border: 1px solid var(--border);
+  border-radius: 5px;
+  background: var(--background);
+}
+
+.instance-content-value-method {
+  background: var(--header);
+  color: var(--text-light-grey);
+  padding: 6px;
+  border-bottom: 1px solid var(--border);
+}
+
+.instance-content-value-paths {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 6px;
+}
+
+.instance-content-value-path {
+  color: var(--text-light-grey);
+  background: var(--white);
+  color: var(--black);
+  border: 1px solid var(--border);
+  padding: 6px;
+  border-radius: 5px;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
 }
 
 .green {
-  color: #2ecc40;
+  color: var(--green);
 }
 
 .orange {
-  color: #ff851b;
+  color: var(--orange);
 }
 
 .red {
-  color: #ff4136;
+  color: var(--red);
 }
