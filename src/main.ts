@@ -1,19 +1,19 @@
 import * as bakery from './bakery'
 
-const readFromEnv = (value: string) => {
-  const num = +(process.env?.[value] ?? '1000')
-  if (isNaN(num)) return 1000
+const readFromEnv = (value: string, defaultValue: number) => {
+  const num = +(process.env?.[value] ?? defaultValue.toString())
+  if (isNaN(num)) return defaultValue
   return num
 }
 
-const heartbeatTimeout = readFromEnv('HEARTBEAT_TIMEOUT')
-const heartbeatInterval = readFromEnv('HEARTBEAT_INTERVAL')
-const port = readFromEnv('PORT')
+const heartbeatTimeout = readFromEnv('HEARTBEAT_TIMEOUT', 1000)
+const heartbeatInterval = readFromEnv('HEARTBEAT_INTERVAL', 1000)
+const port = readFromEnv('PORT', 8080)
 
 bakery.create({
   heartbeatTimeout,
   heartbeatInterval,
-  port: 8080,
+  port,
 })
 
 console.log('Bakery started on port 8080')

@@ -11,6 +11,8 @@ import * as logger from './utils/logger'
 import { Options } from './types'
 import { schema } from './service'
 
+export type { Service } from './service'
+
 const handleNotFound = async () => ({ statusCode: 404, body: 'Not Found' })
 
 const getServices = (registry: Registry) => async () => {
