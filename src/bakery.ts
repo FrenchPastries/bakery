@@ -11,7 +11,8 @@ import * as logger from './utils/logger'
 import { Options } from './types'
 import { schema } from './service'
 
-export type { Service } from './service'
+export type { Service, Interface } from './service'
+export type { Services, Options, Heartbeats, Heartbeat } from './types'
 
 const handleNotFound = async () => ({ statusCode: 404, body: 'Not Found' })
 
@@ -56,7 +57,7 @@ const interceptGet: assemble.Middleware = handler => async request => {
   if (request.method !== 'GET') return handler(request)
   if (request.location?.pathname === '/services') return handler(request)
   if (process.env.BAKERY_DEVELOPMENT) {
-    return { statusCode: 302, headers: { Location: 'http://localhost:3006' } }
+    return { statusCode: 302, headers: { Location: 'http://localhost:8081' } }
   } else if (process.env.NODE_ENV === 'development') {
     return await getStaticFiles(request).catch(error => {
       logger.error(error.message)

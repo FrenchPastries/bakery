@@ -1,21 +1,5 @@
 import React, { useState } from 'react'
-
-export type Interface = {
-  type: 'REST'
-  value: {
-    method: string
-    path: string
-  }[]
-}
-
-export type Service = {
-  address: string
-  name: string
-  state: number
-  uuid: string
-  version: string
-  interface: Interface
-}
+import type { Service, Interface } from '../../src/service'
 
 const fetchBakeryServices = async () => {
   try {
@@ -34,7 +18,7 @@ const useBakeryServices = () => {
     const interval = setInterval(async () => {
       const data = await fetchBakeryServices()
       setServices(data)
-    }, 1000)
+    }, 5000)
     return () => clearInterval(interval)
   }, [setServices])
   return services
@@ -103,6 +87,7 @@ const RenderInterface = ({ interf }: { interf: Interface }) => {
 
 const RenderInstance = ({ instance }: { instance: Service }) => {
   const { name, version, address, state } = instance
+  const averageState = state.length === 0 ? 0 : state.reduce((acc, val) => acc + val, 0) / state.length
   return (
     <div className="instance column">
       <div className="instance-name">{name}</div>
@@ -114,7 +99,7 @@ const RenderInstance = ({ instance }: { instance: Service }) => {
             <span className="instance-pill">{instance.interface.type}</span>
           </div>
         </div>
-        <span className={`instance-state ${getStateColor(state)}`}>{state ?? '?'} %</span>
+        <span className={`instance-state ${getStateColor(averageState)}`}>{averageState} %</span>
       </div>
       <div className="instance-content column">
         <RenderInterface interf={instance.interface} />
@@ -133,7 +118,6 @@ const RenderServices = ({ services }: { services: Service[] }) => {
 
 const App = () => {
   const services = useBakeryServices()
-  console.log(services)
   return (
     <div className="app">
       <header className="app-header">Bakery</header>

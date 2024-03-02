@@ -1,5 +1,5 @@
 import { v4 as uuidv4 } from 'uuid'
-import { Services } from '../types'
+import { Heartbeat, Heartbeats, Services } from '../types'
 import { Service } from '../service'
 
 export class Registry {
@@ -44,15 +44,16 @@ export class Registry {
   }
 
   #generateHeartbeatContent() {
-    const response = Object.entries(this.#services).reduce((acc, [serviceName, servicesById]) => {
+    const response: Heartbeats = Object.entries(this.#services).reduce((acc, [serviceName, servicesById]) => {
       const services_ = Object.values(servicesById)
       if (services_.length === 0) return acc
-      const api = services_[0]
+      const api = services_[0].interface
+      const name = services_[0].name
       const instances = services_.reduce(
         (acc, { address, version }) => [...acc, { address, version }],
         [] as { address: string; version: string }[]
       )
-      const inteface_ = { ...api, instances }
+      const inteface_ = { name, api, instances }
       return { ...acc, [serviceName]: inteface_ }
     }, {})
     this.#heartbeatContent = JSON.stringify(response)

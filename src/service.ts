@@ -1,18 +1,17 @@
 import joi from 'joi'
 
+export type Interface = {
+  type: 'REST'
+  value: { method: string; path: string }[]
+}
+
 export type Service = {
   uuid: string
   name: string
   address: string
   version: string
-  state: number
-  interface: {
-    type: 'REST'
-    value: {
-      method: string
-      path: string
-    }[]
-  }
+  state: number[]
+  interface: Interface
 }
 
 const endpoint = joi
@@ -26,7 +25,7 @@ export const schema = joi.object<Omit<Service, 'uuid'>>({
   name: joi.string().required(),
   address: joi.string().required(),
   version: joi.string().required(),
-  state: joi.string().required(),
+  state: joi.array().items(joi.string()).required(),
   interface: joi
     .object({
       type: joi.string().allow('REST').required(),
