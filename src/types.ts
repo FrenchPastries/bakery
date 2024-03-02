@@ -14,5 +14,5 @@ export type Heartbeat = {
   instances: {
     address: string
     version: string
-  }
+  }[]
 }

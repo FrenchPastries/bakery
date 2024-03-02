@@ -20,7 +20,6 @@ const getHeartbeatOrKillService = async (
     const fetcher = heartbeat(`http://${hostname}:${port}/heartbeat`, timeout)
     const request = await fetcher(registry.heartbeat)
     const data = await request.text()
-    console.log(data)
     getPingResponse(registry, service, data)
   } catch (error: unknown) {
     if (error instanceof Error) logger.error(error.message)
