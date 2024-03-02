@@ -29,6 +29,7 @@ const registerService = (registry: Registry) => {
       return badRequest(result.error.message)
     } else {
       const uuid = registry.register(result.value)
+      logger.log(`Registering ${result.value.name}@${result.value.address}, uuid: ${uuid}`)
       return response({ uuid })
     }
   }
