@@ -10,7 +10,7 @@
   "description": "Node JS service registry",
   "main": "dist/bakery.js",
   "files": [
-    "src",
+    "dist",
     "backoffice/build"
   ],
   "scripts": {
