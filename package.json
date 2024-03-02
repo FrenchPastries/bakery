@@ -14,8 +14,9 @@
     "backoffice/build"
   ],
   "scripts": {
+    "start": "node dist/main.js",
     "test": "mocha test/**/*-test.js",
-    "prepublish": "yarn --cwd backoffice build && yarn build",
+    "prepare": "yarn --cwd backoffice build && yarn build",
     "build": "tsc",
     "dev": "concurrently -c 'bold.blue,bold.green,bold.red' 'tsc --watch --preserveWatchOutput' 'PORT=8080 BAKERY_DEVELOPMENT=true nodemon dist/main.js' 'yarn --cwd backoffice dev'"
   },
@@ -23,6 +24,7 @@
     "@frenchpastries/arrange": "^1.0.1",
     "@frenchpastries/assemble": "^1.0.1",
     "@frenchpastries/millefeuille": "^1.0.2",
+    "joi": "^17.12.2",
     "uuid": "^9.0.1"
   },
   "devDependencies": {

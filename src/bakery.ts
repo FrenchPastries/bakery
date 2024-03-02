@@ -1,5 +1,5 @@
 import * as millefeuille from '@frenchpastries/millefeuille'
-import { response } from '@frenchpastries/millefeuille/response'
+import { badRequest, response } from '@frenchpastries/millefeuille/response'
 import * as assemble from '@frenchpastries/assemble'
 import * as arrange from '@frenchpastries/arrange'
 import * as fs from 'fs/promises'
@@ -9,6 +9,7 @@ import { Registry } from './registry/registry'
 import * as heartbeat from './registry/heartbeat'
 import * as logger from './utils/logger'
 import { Options } from './types'
+import { schema } from './service'
 
 const handleNotFound = async () => ({ statusCode: 404, body: 'Not Found' })
 
@@ -19,8 +20,14 @@ const getServices = (registry: Registry) => async () => {
 
 const registerService = (registry: Registry) => {
   return async ({ body }: millefeuille.IncomingRequest) => {
-    const uuid = registry.register(body)
-    return response({ uuid })
+    const result = schema.validate(body)
+    if (result.error) {
+      logger.error(`Body does not comply with interface`)
+      return badRequest(result.error.message)
+    } else {
+      const uuid = registry.register(result.value)
+      return response({ uuid })
+    }
   }
 }
 

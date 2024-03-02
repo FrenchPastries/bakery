@@ -1,5 +1,6 @@
 import { v4 as uuidv4 } from 'uuid'
-import { Service, Services } from '../types'
+import { Services } from '../types'
+import { Service } from '../service'
 
 export class Registry {
   #services: Services
@@ -15,7 +16,7 @@ export class Registry {
     this.#services[service.name][uuid] = service
   }
 
-  register(service: Service) {
+  register(service: Omit<Service, 'uuid'>) {
     const uuid = uuidv4()
     this.set(uuid, { ...service, uuid })
     this.#generateHeartbeatContent()

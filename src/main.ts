@@ -1,10 +1,18 @@
-// File used for dev purposes.
-
 import * as bakery from './bakery'
 
+const readFromEnv = (value: string) => {
+  const num = +(process.env?.[value] ?? '1000')
+  if (isNaN(num)) return 1000
+  return num
+}
+
+const heartbeatTimeout = readFromEnv('HEARTBEAT_TIMEOUT')
+const heartbeatInterval = readFromEnv('HEARTBEAT_INTERVAL')
+const port = readFromEnv('PORT')
+
 bakery.create({
-  heartbeatTimeout: 10000000,
-  heartbeatInterval: 10000000,
+  heartbeatTimeout,
+  heartbeatInterval,
   port: 8080,
 })
 

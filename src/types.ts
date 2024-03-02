@@ -1,4 +1,5 @@
-export type Service = { uuid: string; name: string; address: string; version: string }
+import { Service } from './service'
+
 export type Services = { [serviceName: string]: { [uuid: string]: Service } }
 export type Options = {
   heartbeatInterval: number
