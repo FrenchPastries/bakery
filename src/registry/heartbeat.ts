@@ -29,8 +29,7 @@ const getHeartbeatOrKillService = async (
 
 const ping = (registry: Registry, timeout: number) => {
   return async (service: Service) => {
-    const [hostname, port] = service.address.split(':')
-    getHeartbeatOrKillService(registry, timeout, hostname, parseInt(port), service)
+    getHeartbeatOrKillService(registry, timeout, service.address, service.port, service)
   }
 }
 

@@ -5,7 +5,7 @@ interface DnsAnswerSRV extends DnsAnswer {
   priority: number
   weight: number
   port: number
-  target_host: string
+  target: string
 }
 
 export const create = (registry: Registry, port: number) => {
@@ -27,7 +27,7 @@ export const create = (registry: Registry, port: number) => {
         priority: 10,
         weight: 5,
         port,
-        target_host: address,
+        target: address,
       } as DnsAnswerSRV)
       send(response)
     },
