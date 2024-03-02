@@ -18,16 +18,18 @@
     "test": "mocha test/**/*-test.js",
     "prepare": "yarn --cwd backoffice build && yarn build",
     "build": "tsc",
-    "dev": "concurrently -c 'bold.blue,bold.green,bold.red' 'tsc --watch --preserveWatchOutput' 'PORT=8080 BAKERY_DEVELOPMENT=true nodemon dist/main.js' 'yarn --cwd backoffice dev'"
+    "dev": "concurrently -c 'bold.blue,bold.green,bold.red' 'tsc --watch --preserveWatchOutput' 'BAKERY_DEVELOPMENT=true NODE_ENV=development nodemon dist/main.js' 'yarn --cwd backoffice dev'"
   },
   "dependencies": {
     "@frenchpastries/arrange": "^1.0.1",
     "@frenchpastries/assemble": "^1.0.1",
     "@frenchpastries/millefeuille": "^1.0.2",
+    "dns2": "^2.1.0",
     "joi": "^17.12.2",
     "uuid": "^9.0.1"
   },
   "devDependencies": {
+    "@types/dns2": "^2.0.9",
     "@types/jest": "^29.5.12",
     "@types/node": "^20.11.21",
     "@types/uuid": "^9.0.8",

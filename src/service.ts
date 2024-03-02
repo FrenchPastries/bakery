@@ -9,6 +9,7 @@ export type Service = {
   uuid: string
   name: string
   address: string
+  port: number
   version: string
   state: number[]
   interface: Interface
@@ -24,6 +25,7 @@ const endpoint = joi
 export const schema = joi.object<Omit<Service, 'uuid'>>({
   name: joi.string().required(),
   address: joi.string().required(),
+  port: joi.number().required(),
   version: joi.string().required(),
   state: joi.array().items(joi.string()).required(),
   interface: joi

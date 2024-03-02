@@ -2,6 +2,11 @@ import { v4 as uuidv4 } from 'uuid'
 import { Heartbeats, Services } from '../types'
 import { Service } from '../service'
 
+const computeAverageState = (state: number[]) => {
+  if (state.length === 0) return 100
+  return state.reduce((acc, val) => acc + val, 0) / state.length
+}
+
 export class Registry {
   #services: Services
   #heartbeatContent: string
@@ -41,6 +46,17 @@ export class Registry {
 
   get heartbeat() {
     return this.#heartbeatContent
+  }
+
+  getDns(serviceName: string): { address: string; port: number } | undefined {
+    const service = this.#services[serviceName]
+    const sortedServers = Object.values(service)
+      .map(serv => ({ ...serv, state: computeAverageState(serv.state) }))
+      .sort((a, b) => (a.state < b.state ? -1 : 1))
+    const server = sortedServers[0]
+    if (!server) return
+    const { address, port } = server
+    return { address, port }
   }
 
   #generateHeartbeatContent() {

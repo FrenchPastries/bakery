@@ -14,6 +14,7 @@ bakery.create({
   heartbeatTimeout,
   heartbeatInterval,
   port,
+  dns: !!process.env.DNS || process.env.NODE_ENV === 'development',
 })
 
 console.log('Bakery started on port 8080')

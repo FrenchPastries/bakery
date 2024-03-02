@@ -10,6 +10,7 @@ import * as heartbeat from './registry/heartbeat'
 import * as logger from './utils/logger'
 import { Options } from './types'
 import { schema } from './service'
+import * as dns from './dns'
 
 export type { Service, Interface } from './service'
 export type { Services, Options, Heartbeats, Heartbeat } from './types'
@@ -25,7 +26,7 @@ const registerService = (registry: Registry) => {
   return async ({ body }: millefeuille.IncomingRequest) => {
     const result = schema.validate(body)
     if (result.error) {
-      logger.error(`Body does not comply with interface`)
+      logger.error(`Body does not comply with interface`, result.error)
       return badRequest(result.error.message)
     } else {
       const uuid = registry.register(result.value)
@@ -81,12 +82,14 @@ const allRoutes = (registry: Registry) => {
   )
 }
 
-export const create = ({ heartbeatInterval, heartbeatTimeout, port }: Options) => {
+export const create = ({ heartbeatInterval, heartbeatTimeout, port, ...options }: Options) => {
   const registry = new Registry()
   const server = millefeuille.create(interceptGet(allRoutes(registry)), { port })
+  const dnsServer = options.dns ? dns.create(registry, (port ?? 8080) + 1) : null
   const unsubscriber = pingServices(registry, heartbeatInterval, heartbeatTimeout)
   return () => {
     unsubscriber()
     server.close()
+    dnsServer?.close()
   }
 }
