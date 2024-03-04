@@ -85,7 +85,9 @@ const allRoutes = (registry: Registry) => {
 export const create = ({ heartbeatInterval, heartbeatTimeout, port, ...options }: Options) => {
   const registry = new Registry()
   const server = millefeuille.create(interceptGet(allRoutes(registry)), { port })
+  console.log(`Bakery started on port ${port ?? 8080}`)
   const dnsServer = options.dns ? dns.create(registry, (port ?? 8080) + 1) : null
+  console.log(`DNS server listening on port ${port}`)
   const unsubscriber = pingServices(registry, heartbeatInterval, heartbeatTimeout)
   return () => {
     unsubscriber()

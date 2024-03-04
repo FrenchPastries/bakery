@@ -33,6 +33,5 @@ export const create = (registry: Registry, port: number) => {
     },
   })
   server.listen({ udp: { port, address: 'localhost' } })
-  console.log(`DNS server listening on port ${port}`)
   return server
 }
