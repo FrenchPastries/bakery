@@ -18,7 +18,7 @@ export type { Services, Options, Heartbeats, Heartbeat } from './types'
 const handleNotFound = async () => ({ statusCode: 404, body: 'Not Found' })
 
 const getServices = (registry: Registry) => async () => {
-  const allServices = registry.list()
+  const allServices = JSON.parse(registry.heartbeat)
   return response(allServices)
 }
 
