@@ -13,7 +13,7 @@ export class Registry {
 
   constructor() {
     this.#services = {}
-    this.#heartbeatContent = 'null'
+    this.#heartbeatContent = '{}'
   }
 
   set(uuid: string, service: Service) {
