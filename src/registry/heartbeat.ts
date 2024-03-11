@@ -1,5 +1,5 @@
 import { Service } from '../service'
-import * as logger from '../utils/logger'
+import { Logger } from '../utils/logger'
 import { Registry } from './registry'
 
 const heartbeat = (url: string, timeout: number) => {
@@ -14,40 +14,41 @@ const getHeartbeatOrKillService = async (
   timeout: number,
   hostname: string,
   port: number,
-  service: Service
+  service: Service,
+  logger: Logger
 ) => {
   try {
     const fetcher = heartbeat(`http://${hostname}:${port}/heartbeat`, timeout)
     const request = await fetcher(registry.heartbeat)
     const data = await request.text()
-    getPingResponse(registry, service, data)
+    getPingResponse(registry, logger, service, data)
   } catch (error: unknown) {
     if (error instanceof Error) logger.error(error.message)
-    removeDeadService(registry, service)
+    removeDeadService(registry, logger, service)
   }
 }
 
-const ping = (registry: Registry, timeout: number) => {
+const ping = (registry: Registry, timeout: number, logger: Logger) => {
   return async (service: Service) => {
-    getHeartbeatOrKillService(registry, timeout, service.address, service.port, service)
+    getHeartbeatOrKillService(registry, timeout, service.address, service.port, service, logger)
   }
 }
 
-const getPingResponse = (registry: Registry, service: Service, response: unknown) => {
+const getPingResponse = (registry: Registry, logger: Logger, service: Service, response: unknown) => {
   if (response && typeof response === 'object' && 'uuid' in response && typeof response.uuid === 'string') {
     const { name, address } = service
     logger.log(`[ping]: OK ${name}@${address} (UUID: ${service.uuid})`)
     if (response.uuid !== service.uuid) {
-      removeDeadService(registry, service)
+      removeDeadService(registry, logger, service)
     }
   }
 }
 
-const removeDeadService = (registry: Registry, { name, address, uuid }: Service) => {
+const removeDeadService = (registry: Registry, logger: Logger, { name, address, uuid }: Service) => {
   logger.log(`[dead]: ${name}@${address}`)
   registry.remove(uuid)
 }
 
-export const pingEveryServices = (timeout: number) => (registry: Registry) => {
-  registry.list().forEach(ping(registry, timeout))
+export const pingEveryServices = (timeout: number, logger: Logger) => (registry: Registry) => {
+  registry.list().forEach(ping(registry, timeout, logger))
 }

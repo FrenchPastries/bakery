@@ -1,4 +1,5 @@
 import { Interface, Service } from './service'
+import { Logger } from './utils/logger'
 
 export type Services = { [serviceName: string]: { [uuid: string]: Service } }
 export type Options = {
@@ -6,6 +7,7 @@ export type Options = {
   heartbeatTimeout: number
   port?: number
   dns?: boolean
+  logger?: Logger
 }
 
 export type Heartbeats = { [serviceName: string]: Heartbeat }

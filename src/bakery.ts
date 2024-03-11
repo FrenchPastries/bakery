@@ -5,12 +5,13 @@ import * as arrange from '@frenchpastries/arrange'
 import * as fs from 'fs/promises'
 import * as path from 'path'
 
+import * as dns from './dns'
 import { Registry } from './registry/registry'
 import * as heartbeat from './registry/heartbeat'
-import * as logger from './utils/logger'
 import { Options } from './types'
 import { schema } from './service'
-import * as dns from './dns'
+import { Logger } from './utils/logger'
+import * as logger from './utils/logger'
 
 export type { Service, Interface } from './service'
 export type { Services, Options, Heartbeats, Heartbeat } from './types'
@@ -22,7 +23,7 @@ const getServices = (registry: Registry) => async () => {
   return response(allServices)
 }
 
-const registerService = (registry: Registry) => {
+const registerService = (registry: Registry, logger: Logger) => {
   return async ({ body }: millefeuille.IncomingRequest) => {
     const result = schema.validate(body)
     if (result.error) {
@@ -36,8 +37,8 @@ const registerService = (registry: Registry) => {
   }
 }
 
-const pingServices = (registry: Registry, heartbeatInterval: number, heartbeatTimeout: number) => {
-  const pinger = heartbeat.pingEveryServices(heartbeatTimeout)
+const pingServices = (registry: Registry, heartbeatInterval: number, heartbeatTimeout: number, logger: Logger) => {
+  const pinger = heartbeat.pingEveryServices(heartbeatTimeout, logger)
   const intervalId = setInterval(pinger, heartbeatInterval, registry)
   return () => clearInterval(intervalId)
 }
@@ -55,27 +56,29 @@ const getStaticFiles = async (request: millefeuille.IncomingRequest) => {
   }
 }
 
-const interceptGet: assemble.Middleware = handler => async request => {
-  if (request.method !== 'GET') return handler(request)
-  if (request.location?.pathname === '/services') return handler(request)
-  if (process.env.BAKERY_DEVELOPMENT) {
-    return { statusCode: 302, headers: { Location: 'http://localhost:8081' } }
-  } else if (process.env.NODE_ENV === 'development') {
-    return await getStaticFiles(request).catch(error => {
-      logger.error(error.message)
-      return handleNotFound()
-    })
-  } else {
-    return handler(request)
+const interceptGet = (logger: Logger): assemble.Middleware => {
+  return handler => async request => {
+    if (request.method !== 'GET') return handler(request)
+    if (request.location?.pathname === '/services') return handler(request)
+    if (process.env.BAKERY_DEVELOPMENT) {
+      return { statusCode: 302, headers: { Location: 'http://localhost:8081' } }
+    } else if (process.env.NODE_ENV === 'development') {
+      return await getStaticFiles(request).catch(error => {
+        logger.error(error.message)
+        return handleNotFound()
+      })
+    } else {
+      return handler(request)
+    }
   }
 }
 
-const allRoutes = (registry: Registry) => {
+const allRoutes = (registry: Registry, logger: Logger) => {
   return arrange.json.response(
     arrange.json.parse(
       assemble.routes([
         assemble.get('/services', getServices(registry)),
-        assemble.post('/register', registerService(registry)),
+        assemble.post('/register', registerService(registry, logger)),
         assemble.notFound(handleNotFound),
       ])
     )
@@ -83,12 +86,13 @@ const allRoutes = (registry: Registry) => {
 }
 
 export const create = ({ heartbeatInterval, heartbeatTimeout, port, ...options }: Options) => {
+  const instanceLogger: Logger = options.logger ?? logger
   const registry = new Registry()
-  const server = millefeuille.create(interceptGet(allRoutes(registry)), { port })
-  console.log(`Bakery started on port ${port ?? 8080}`)
+  const server = millefeuille.create(interceptGet(instanceLogger)(allRoutes(registry, instanceLogger)), { port })
+  instanceLogger.log(`Bakery started on port ${port ?? 8080}`)
   const dnsServer = options.dns ? dns.create(registry, (port ?? 8080) + 1) : null
-  if (options.dns) console.log(`DNS server listening on port ${port}`)
-  const unsubscriber = pingServices(registry, heartbeatInterval, heartbeatTimeout)
+  if (options.dns) instanceLogger.log(`DNS server listening on port ${port}`)
+  const unsubscriber = pingServices(registry, heartbeatInterval, heartbeatTimeout, instanceLogger)
   return () => {
     unsubscriber()
     server.close()
