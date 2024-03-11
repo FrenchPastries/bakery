@@ -1,5 +1,6 @@
 import dns2, { DnsAnswer } from 'dns2'
 import { Registry } from './registry/registry'
+import { Logger } from './utils/logger'
 
 interface DnsAnswerSRV extends DnsAnswer {
   priority: number
@@ -8,16 +9,23 @@ interface DnsAnswerSRV extends DnsAnswer {
   target: string
 }
 
-export const create = (registry: Registry, port: number) => {
+export const create = (registry: Registry, port: number, logger: Logger) => {
   const server = dns2.createServer({
     udp: true,
     handle: (request, send, rinfo) => {
       const response = dns2.Packet.createResponseFromRequest(request)
       const [question] = request.questions
       const { name } = question
-      if (!name.endsWith('.bakery')) return send(response)
-      const server = registry.getDns(name.replace(/\.bakery/g, ''))
-      if (!server) return send(response)
+      if (!name.endsWith('.bakery')) {
+        logger.debug(`[dns]: request does not end with .bakery: ${name}`)
+        return send(response)
+      }
+      const serviceName = name.replace(/\.bakery/g, '')
+      const server = registry.getDns(serviceName)
+      if (!server) {
+        logger.debug(`[dns]: no service called ${serviceName} found`)
+        return send(response)
+      }
       const { address, port } = server
       response.answers.push({
         name,

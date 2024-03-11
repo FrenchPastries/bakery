@@ -30,11 +30,12 @@ const registerService = (registry: Registry, logger: Logger) => {
   return async ({ body }: millefeuille.IncomingRequest) => {
     const result = schema.validate(body)
     if (result.error) {
-      logger.error(`Body does not comply with interface`, result.error)
+      logger.error(`[register]: \`request.body\` does not comply with interface:`, result.error)
       return badRequest(result.error.message)
     } else {
       const uuid = registry.register(result.value)
-      logger.log(`Registering ${result.value.name}@${result.value.address}, uuid: ${uuid}`)
+      const name = `${result.value.name}@[${result.value.address}]`
+      logger.info(`[register]: service ${name} registered, { "uuid": "${uuid}" }`)
       return response({ uuid })
     }
   }
@@ -67,7 +68,7 @@ const interceptGet = (logger: Logger): assemble.Middleware => {
       return { statusCode: 302, headers: { Location: 'http://localhost:8081' } }
     } else if (process.env.NODE_ENV === 'development') {
       return await getStaticFiles(request).catch(error => {
-        logger.error(error.message)
+        logger.error(`[static]: unable to serve static files:`, error.message)
         return handleNotFound()
       })
     } else {
@@ -92,9 +93,10 @@ export const create = ({ heartbeatInterval, heartbeatTimeout, port, ...options }
   const instanceLogger: Logger = options.logger ?? logger
   const registry = new Registry()
   const server = millefeuille.create(interceptGet(instanceLogger)(allRoutes(registry, instanceLogger)), { port })
-  instanceLogger.log(`Bakery started on port ${port ?? 8080}`)
-  const dnsServer = options.dns ? dns.create(registry, (port ?? 8080) + 1) : null
-  if (options.dns) instanceLogger.log(`DNS server listening on port ${(port ?? 8080) + 1}`)
+  const actualPort = port ?? 8080
+  instanceLogger.info(`[services]: bakery started, listening on port ${actualPort}`)
+  const dnsServer = options.dns ? dns.create(registry, actualPort + 1, instanceLogger) : null
+  if (options.dns) instanceLogger.info(`[services]: DNS started, listening on port ${actualPort + 1}`)
   const unsubscriber = pingServices(registry, heartbeatInterval, heartbeatTimeout, instanceLogger)
   return () => {
     unsubscriber()
