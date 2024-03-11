@@ -1,6 +1,7 @@
 import { Service } from '../service'
 import { Logger } from '../utils/logger'
 import { Registry } from './registry'
+import * as ip from '../utils/ip'
 
 const heartbeat = (url: string, timeout: number) => {
   return (body: string) => {
@@ -18,7 +19,8 @@ const getHeartbeatOrKillService = async (
   logger: Logger
 ) => {
   try {
-    const fetcher = heartbeat(`http://${hostname}:${port}/heartbeat`, timeout)
+    const host = ip.ipv6.enclose(hostname)
+    const fetcher = heartbeat(`http://${host}:${port}/heartbeat`, timeout)
     const request = await fetcher(registry.heartbeat)
     const data = await request.text()
     getPingResponse(registry, logger, service, data)

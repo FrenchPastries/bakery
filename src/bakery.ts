@@ -13,6 +13,8 @@ import { schema } from './service'
 import { Logger } from './utils/logger'
 import * as logger from './utils/logger'
 
+export * as ip from './utils/ip'
+
 export type { Service, Interface } from './service'
 export type { Services, Options, Heartbeats, Heartbeat } from './types'
 export type { Logger } from './utils/logger'
