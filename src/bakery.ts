@@ -15,6 +15,7 @@ import * as logger from './utils/logger'
 
 export type { Service, Interface } from './service'
 export type { Services, Options, Heartbeats, Heartbeat } from './types'
+export type { Logger } from './utils/logger'
 
 const handleNotFound = async () => ({ statusCode: 404, body: 'Not Found' })
 
